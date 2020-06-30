@@ -1,12 +1,25 @@
 import React from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, Alert } from 'react-native';
 import {LocalizationContext} from '../../translation/LocalizationContext';
+import Axios from 'axios';
 
 export default function Login({navigation}) {
   const languages = React.useContext(LocalizationContext);
   const [email, setEmail] = React.useState();
   const [password, setPassword] = React.useState();
 
+const login = (email, password) => {
+   Axios.post('http://192.168.1.66:3000/api/auth/login', {email: email, password: password})
+        .then(res => {alert('Login com sucesso');
+            navigation.navigate('Listagem');
+            return res.data.token;
+        })
+        .catch(err => {
+            if(err.response.status == 403)
+                return false;
+            err;
+        });
+}
     return (
       <View style={styles.container}>
         <Text style={styles.logo}>SmartCity</Text>
@@ -25,14 +38,14 @@ export default function Login({navigation}) {
             placeholderTextColor="#003f5c" autoCompleteType="password"
             onChangeText={(text) => setPassword(text)}/>
         </View>
-        <TouchableOpacity>
-          <Text style={styles.forgot}>Forgot Password?</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.loginBtn}>
-          <Text onPress={() => navigation.navigate('Listagem')} style={styles.loginText}>LOGIN</Text>
+        <TouchableOpacity  style={styles.loginBtn}>
+          <Text onPress={() => login(email,password)} style={styles.loginText}>LOGIN</Text>
         </TouchableOpacity>
         <TouchableOpacity>
           <Text style={styles.loginText}>Signup</Text>
+        </TouchableOpacity>
+        <TouchableOpacity>
+          <Text style={styles.noteText}>{languages.personalNotes}</Text>
         </TouchableOpacity>
 
   
@@ -65,10 +78,6 @@ const styles = StyleSheet.create({
     height:50,
     color:"white"
   },
-  forgot:{
-    color:"white",
-    fontSize:11
-  },
   loginBtn:{
     width:"80%",
     backgroundColor:"#fb5b5a",
@@ -80,6 +89,10 @@ const styles = StyleSheet.create({
     marginBottom:10
   },
   loginText:{
+    color:"white"
+  },
+  noteText:{
+    marginTop:30,
     color:"white"
   }
 });
