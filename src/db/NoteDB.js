@@ -8,8 +8,8 @@ const Note = {
         id: 'int',
         title: 'string',
         local: 'string',
+        date: 'date',
         description: 'string',
-        date: 'date'
     }
 };
 
@@ -18,10 +18,6 @@ const options = {
 }
 export const insertNote = newNote => new Promise ((resolve, reject)=>{
     Realm.open(options).then(realm => {
-        const tmp = realm.objects('Note').sorted('id', true)[0];
-        const id = tmp ?  tmp.id + 1 : 1;
-        note.id = id;
-        note.date = note.date ?? new Date();
         realm.write(() => {
             realm.create('Note', newNote);
             resolve(newNote);
@@ -59,4 +55,4 @@ export const readNote = () => new Promise ((resolve, reject)=>{
     }).catch((error) => reject(error));
 });
 
-export const RealmDB = new Realm(options);
+export const realmDB = new Realm(options);
