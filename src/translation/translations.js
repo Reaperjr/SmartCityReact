@@ -1,4 +1,7 @@
-export const translations = {
+import LocalizedStrings from 'react-native-localization';
+export const DEFAULT_LANGUAGE = 'en';
+
+const translations = {
   en: {
     WELCOME: 'Welcome to Localization',
     BUTTON: 'b en',
@@ -21,8 +24,8 @@ export const translations = {
     dialogalerttitle: 'Please enter note Title',
     dialogalertlocal: 'Please enter note Local',
     dialogalertdesc: 'Please enter note description',
-    fillFields: "Fill all fields before continuing!",
-    personalNotes: "Personal Notes"
+    fillFields: 'Fill all fields before continuing!',
+    personalNotes: 'Personal Notes'
   },
   pt: {
     WELCOME: 'Bem-vindo à multi-lingua',
@@ -46,8 +49,8 @@ export const translations = {
     dialogalerttitle: 'Introduza título da nota',
     dialogalertlocal: 'Introduza local da nota',
     dialogalertdesc: 'Introduza descrição da nota',
-    fillFields: "Preencha todos os campos para continuar!",
-    personalNotes: "Notas Pessoais"
+    fillFields: 'Preencha todos os campos para continuar!',
+    personalNotes: 'Notas Pessoais'
   }
 };
-
+export default new LocalizedStrings(translations);

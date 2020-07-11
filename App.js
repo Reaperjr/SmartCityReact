@@ -7,6 +7,7 @@ import Listagem from './src/screens/Note/Listagem'
 import ApgAtz from './src/screens/Note/ApgAtz'
 import Inserir from './src/screens/Note/Inserir'
 import Login from './src/screens/login/Login'
+import Map from './src/screens/Maps/Map'
 
 const Stack = createStackNavigator();
 
@@ -15,6 +16,7 @@ function App() {
      <NavigationContainer>
        <Stack.Navigator initialRouteName="Login">
        <Stack.Screen name="Login" component={Login} options={{headerShown: false}}/>
+       <Stack.Screen name="Map" component={Map}/>
           <Stack.Screen name="Listagem" component={Listagem} />
           <Stack.Screen name="ApgAtz" component={ApgAtz} />
           <Stack.Screen name="Inserir" component={Inserir} />
