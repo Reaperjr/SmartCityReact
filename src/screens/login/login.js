@@ -1,18 +1,19 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, Alert } from 'react-native';
 import {LocalizationContext} from '../../translation/LocalizationContext';
 import Axios from 'axios';
 
 export default function Login({navigation}) {
-  const languages = React.useContext(LocalizationContext);
+  const {translations} = useContext(LocalizationContext);
   const [email, setEmail] = React.useState();
   const [password, setPassword] = React.useState();
 
 const login = (email, password) => {
    Axios.post('http://192.168.1.66:3000/api/auth/login', {email: email, password: password})
-        .then(res => {alert('Login com sucesso');
-            navigation.navigate('Listagem');
-            return res.data.token;
+        .then(res => {alert(res.data.message);
+            navigation.navigate('Map');
+            console.log(res.data);
+            return res.data;
         })
         .catch(err => {
             if(err.response.status == 403)
@@ -45,7 +46,7 @@ const login = (email, password) => {
           <Text style={styles.loginText}>Signup</Text>
         </TouchableOpacity>
         <TouchableOpacity>
-          <Text style={styles.noteText}>{languages.personalNotes}</Text>
+          <Text  onPress={() => navigation.navigate('Listagem')} style={styles.noteText}>{translations.personalNotes}</Text>
         </TouchableOpacity>
 
   
@@ -55,7 +56,7 @@ const login = (email, password) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#003f5c',
+    backgroundColor: 'steelblue',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -67,7 +68,7 @@ const styles = StyleSheet.create({
   },
   inputView:{
     width:"80%",
-    backgroundColor:"#465881",
+    backgroundColor:"steelblue",
     borderRadius:25,
     height:50,
     marginBottom:20,

@@ -1,10 +1,9 @@
 import React, { createContext, useState } from 'react';
-import translations from './translations';
+import translations, { DEFAULT_LANGUAGE } from './translations';
 import AsyncStorage from '@react-native-community/async-storage';
 import * as RNLocalize from 'react-native-localize';
 
 const APP_LANGUAGE = 'appLanguage';
-const DEFAULT_LANGUAGE = 'en'
 
 export const LocalizationContext = createContext({
   translations,
