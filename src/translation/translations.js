@@ -25,7 +25,9 @@ const translations = {
     dialogalertlocal: 'Please enter note Local',
     dialogalertdesc: 'Please enter note description',
     fillFields: 'Fill all fields before continuing!',
-    personalNotes: 'Personal Notes'
+    personalNotes: 'Personal Notes',
+    takePic:'Take Picture',
+    save:'Save'
   },
   pt: {
     WELCOME: 'Bem-vindo à multi-lingua',
@@ -50,7 +52,9 @@ const translations = {
     dialogalertlocal: 'Introduza local da nota',
     dialogalertdesc: 'Introduza descrição da nota',
     fillFields: 'Preencha todos os campos para continuar!',
-    personalNotes: 'Notas Pessoais'
+    personalNotes: 'Notas Pessoais',
+    takePic:'Tirar Fotografia',
+    save: 'Guardar'
   }
 };
 export default new LocalizedStrings(translations);
