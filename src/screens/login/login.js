@@ -12,7 +12,6 @@ const login = (email, password) => {
    Axios.post('http://192.168.1.66:3000/api/auth/login', {email: email, password: password})
         .then(res => {alert(res.data.message);
             navigation.navigate('Map');
-            console.log(res.data);
             return res.data;
         })
         .catch(err => {
@@ -46,7 +45,7 @@ const login = (email, password) => {
           <Text style={styles.loginText}>Signup</Text>
         </TouchableOpacity>
         <TouchableOpacity>
-          <Text  onPress={() => navigation.navigate('Listagem')} style={styles.noteText}>{translations.personalNotes}</Text>
+          <Text  onPress={() => navigation.navigate('Map')} style={styles.noteText}>{translations.personalNotes}</Text>
         </TouchableOpacity>
 
   

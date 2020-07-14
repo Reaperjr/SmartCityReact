@@ -2,6 +2,7 @@ var connection = require('../config/config');
 const base = {};
 
 base.submit = async function (req, res) {
+  
   var subm = {
     assunto: req.body.assunto,
     lat: req.body.lat,
@@ -11,6 +12,7 @@ base.submit = async function (req, res) {
     id_user: req.body.id_user,
     data: req.body.data
   }
+  console.log(subm)
   connection.query('INSERT INTO submissions SET ?', subm, function (error, results, fields) {
     if (error) {
       res.json({

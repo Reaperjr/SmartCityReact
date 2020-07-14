@@ -6,7 +6,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import Listagem from './src/screens/Note/Listagem'
 import ApgAtz from './src/screens/Note/ApgAtz'
 import Inserir from './src/screens/Note/Inserir'
-import Login from './src/screens/login/Login'
+import Login from './src/screens/login/login'
 import Map from './src/screens/Maps/Map'
 
 const Stack = createStackNavigator();
