@@ -12,7 +12,7 @@ base.submit = async function (req, res) {
     id_user: req.body.id_user,
     data: req.body.data
   }
-  console.log(subm)
+  
   connection.query('INSERT INTO submissions SET ?', subm, function (error, results, fields) {
     if (error) {
       res.json({
@@ -30,7 +30,7 @@ base.submit = async function (req, res) {
 }
 
 base.getAll = async function (req, res) {
-  connection.query('SELECT id_submissions, assunto,lat,lng,obs,id_user,data FROM  submissions', function (error, results, fields) {
+  connection.query('SELECT id_submissions, assunto,lat,lng,obs,id_user,data, img FROM  submissions', function (error, results, fields) {
     if (error) {
       res.json({
         status: false,
@@ -90,6 +90,7 @@ base.delete = async function (req, res) {
 base.updates = async function (req, res) {
   
   var data = [req.body.assunto,req.body.obs,req.body.img, req.body.data, req.body.id_submissions]
+  console.log(data);
   connection.query('UPDATE submissions SET assunto=?, obs=?, img=?, data=? WHERE id_submissions=?', data, function (error, results, fields) {
     if (error) {
       res.json({

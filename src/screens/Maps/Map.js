@@ -1,8 +1,8 @@
 import * as React from 'react';
 import MapView, { PROVIDER_GOOGLE, Marker, Callout } from 'react-native-maps';
-import { View, StyleSheet, PermissionsAndroid, Modal, Text, Button, Image, AsyncStorage, Dimensions } from 'react-native';
+import { View, StyleSheet, PermissionsAndroid, Modal, Text, Image, AsyncStorage, Dimensions } from 'react-native';
 import Geolocation from '@react-native-community/geolocation';
-import {Icon} from 'react-native-elements';
+import {Icon, Button} from 'react-native-elements';
 import { ScrollView, TextInput } from 'react-native-gesture-handler';
 import {RNCamera} from 'react-native-camera';
 import { useFocusEffect } from '@react-navigation/native';
@@ -28,7 +28,7 @@ function requestGeolocaionPermisson() {
 }
 
 export default function Map(props, route){
-    //const parametro = route.params.parametro;
+    //const { id } = route.params;
     const {translations} = React.useContext(LocalizationContext);
     const [currentLocation, setCurrentLocation] = React.useState();
     const [title, setTitle] = React.useState("");
@@ -36,6 +36,7 @@ export default function Map(props, route){
     const [picture, setPicture] = React.useState({});
     const [cameraState, setCameraState] = React.useState(false)
     const [showCreatePointModal, setCretePointModal] = React.useState(false);
+    const [showEditPointModal, setEditPointModal] = React.useState(false);
     const [points, setPoints] = React.useState([]);
     const [selectedPoint, setSelectedPoint] = React.useState();
     const [selectedPointImage, setSelectedPointImage] = React.useState();
@@ -44,7 +45,43 @@ export default function Map(props, route){
     const gravity = 9.81;
     const threshold = 2;
 
-    const createMarker = (title, description, lat, long, picture) =>{
+    const editMarker = (id_submissions) =>{
+        setEditPointModal(true);
+        return (<Modal animationType='fade' transparent visible={showEditPointModal} onRequestClose={()=> {setEditPointModal(false); setTitle(""); setDescription(""); setPicture({})}}>
+        <View style={[styles.modelContainer]}>
+            <View style={styles.modelContent}>
+                <Text style={styles.textLabel} >{translations.title}</Text>
+                <TextInput onChangeText={(text) => setTitle(text)} value={title}/>
+                <Text style={styles.textLabel} >{translations.desc}</Text>
+                <TextInput onChangeText={(text) => setDescription(text)} value={description}/>
+                {picture.uri?(<Image style={styles.picture} source={picture}></Image>) : (<Image style={styles.picture} source={{uri: 'https://img.icons8.com/plasticine/2x/image.png'}}></Image>)}
+                <Button type="outline" title={translations.takePic} onPress={() => setCameraState(true)}/>
+                <Text></Text>
+                <Button type="outline" title={translations.save} onPress={() => editPoint(id_submissions, title, description)}/>
+            </View>
+        </View>
+    </Modal>);
+    };
+
+    const editPoint = (id_submissions,title, description, picture) => {
+        if(Etitle !== "" && Epicture !== ""){
+          Axios.post('http://192.168.1.66:3000/api/submission/updates', {id_submissions: id_submissions, assunto: title, obs:description, img:picture.raw, data: new Date()})
+          .then(res => {
+                if(res){
+                    setTitle("");
+                    setDescription("");
+                    setPicture({});
+                    setEditPointModal(false);
+                    loadPoints();
+                }
+            });
+        }
+        else{
+            alert(translations.fillFields);
+        }
+    }
+
+    const createMarker = (id_submissions,title, description, lat, long, date,picture) =>{
         return (<Marker coordinate={{latitude: lat, longitude: long}} onPress={(event) => {
             console.log(event.nativeEvent);
             setCurrentLocation({
@@ -54,6 +91,8 @@ export default function Map(props, route){
             setSelectedPoint({
                 title: title,
                 description: description,
+                date: date,
+                id_submissions: id_submissions,
                 });
             setSelectedPointImage(`data:image/png;base64,${picture}`);
             return event.nativeEvent;}}
@@ -70,6 +109,17 @@ export default function Map(props, route){
               return false;
       });
     }
+    const deletePoint = (id) => {
+        Axios.delete(`http://192.168.1.66:3000/api/submission/${id}`).then(response =>{ 
+            alert(response.data.message);
+            loadPoints();
+            
+      })
+        .catch(err => {
+            if(err.response.status == 403)
+                return false;
+        });
+      }
 
     const centerMap = () => {
         Geolocation.getCurrentPosition(info => {
@@ -149,17 +199,19 @@ export default function Map(props, route){
             <Modal animationType='fade' transparent visible={showCreatePointModal} onRequestClose={()=> {setCretePointModal(false); setTitle(""); setDescription(""); setPicture({})}}>
                 <View style={[styles.modelContainer]}>
                     <View style={styles.modelContent}>
-                        <Text>{translations.title}</Text>
+                        <Text style={styles.textLabel} >{translations.title}</Text>
                         <TextInput onChangeText={(text) => setTitle(text)} value={title}/>
-                        <Text>{translations.desc}</Text>
+                        <Text style={styles.textLabel} >{translations.desc}</Text>
                         <TextInput onChangeText={(text) => setDescription(text)} value={description}/>
-                        {picture.uri?(<Image style={styles.picture} source={picture}></Image>) : (<Image style={styles.picture} source={{uri: 'https://cdn.dribbble.com/users/2060373/screenshots/5676655/2.jpg'}}></Image>)}
-                        <Button title={translations.takePic} onPress={() => setCameraState(true)}/>
+                        {picture.uri?(<Image style={styles.picture} source={picture}></Image>) : (<Image style={styles.picture} source={{uri: 'https://img.icons8.com/plasticine/2x/image.png'}}></Image>)}
+                        <Button type="outline" title={translations.takePic} onPress={() => setCameraState(true)}/>
                         <Text></Text>
-                        <Button title={translations.save} onPress={savePoint}/>
+                        <Button type="outline" title={translations.save} onPress={savePoint}/>
                     </View>
                 </View>
             </Modal>
+
+            
 
             <Modal transparent={true} visible={selectedPoint !== undefined} onRequestClose={() => setSelectedPoint(undefined)}>
                 <View style={styles.calloutContainer}>
@@ -169,10 +221,21 @@ export default function Map(props, route){
                             <Text style={styles.calloutText}>{selectedPoint !== undefined ? selectedPoint.title : ""}</Text>
                             <Text style={styles.calloutLabel}>{translations.desc}</Text>
                             <Text style={styles.calloutText}>{selectedPoint !== undefined ? selectedPoint.description : ""}</Text>
+                            <Text style={styles.calloutLabel}>{translations.date}</Text>
+                            <Text style={styles.calloutText}>{selectedPoint !== undefined ? selectedPoint.date : ""}</Text>
                         </View>
                         <View style={{flex:1}}>
                             {selectedPoint !== undefined ? (<Image resizeMode='cover' style={{width: "100%", flex: 1}} source={{uri: selectedPointImage} }/>) : (<></>)}
                         </View>
+                        <View style={{flex:0}}>
+                        <Button  title={translations.delete} onPress={ () => deletePoint(selectedPoint.id_submissions)} />
+                        <Text></Text>
+                        <Button  title={translations.edit} onPress={ () => editMarker(selectedPoint.id_submissions)} />
+                        </View> 
+                    </View>   
+                    
+                    <View>
+                    
                     </View>
                 </View>
             </Modal>
@@ -215,7 +278,7 @@ export default function Map(props, route){
                     setCretePointModal(true);
                 }}
             >
-              {points.map(e => createMarker(e.assunto, e.obs, e.lat, e.lng, e.img))}
+              {points.map(e => createMarker(e.id_submissions,e.assunto, e.obs, e.lat, e.lng,e.data, e.img))}
 
             </MapView>
         </View>
@@ -247,6 +310,10 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignContent: 'center'
     },
+    textLabel: {
+          color: 'steelblue',
+          fontSize: 18,
+      },
     modelContent: {
         backgroundColor: '#FFF',
         marginHorizontal: 10,
@@ -294,7 +361,7 @@ const styles = StyleSheet.create({
     },
     calloutLabel: {
         fontSize: 20,
-        color: "#4287f5",
+        color: 'steelblue',
         fontWeight: 'bold',
     },
     calloutContainer:{
