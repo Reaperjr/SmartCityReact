@@ -10,7 +10,7 @@ import { StyleSheet, Platform, View, Button, Image, Text, TextInput, TouchableOp
 import {LocalizationContext} from '../../translation/LocalizationContext';
 import * as NoteDB from '../../db/NoteDB';
 import { Value } from 'react-native-reanimated';
-const languages = LocalizationContext;
+import translations from '../../translation/translations';
 
 class ApgAtz extends Component{
 
@@ -34,28 +34,28 @@ class ApgAtz extends Component{
   NoteDB.updateNote(note).then().catch((error) => {
       alert(`Update note error ${error}`);
   });  
-  Alert.alert("Registo inserido com sucesso.")
+  Alert.alert(translations.updateSuccess)
   }
 
   deleteRegisto = () => {
     Alert.alert(
-        'Delete',
-        'Delete a note',
-        [
-            {
-                text: 'No', onPress: () => { },//Do nothing
-                style: 'cancel'
-            },
-            {
-                text: 'Yes', onPress: () => {
-                    NoteDB.deleteNote(this.state.id).then(this.props.navigation.navigate('Listagem')).catch(error => {
-                        alert(`Failed to delete note with id = ${id}, error=${error}`);
-                    });
-                }
-            },
-        ],
-        { cancelable: true }
-    );
+      translations.delete,
+      translations.delnote,
+      [
+          {
+              text: translations.no, onPress: () => { },//Do nothing
+              style: translations.cancel
+          },
+          {
+              text: translations.yes, onPress: () => {
+                  NoteDB.deleteNote(id).then().catch(error => {
+                      alert(`Failed to delete todoList with id = ${id}, error=${error}`);
+                  });
+              }
+          },
+      ],
+      { cancelable: true }
+  );
 };
 
   render() {
@@ -63,23 +63,23 @@ class ApgAtz extends Component{
    return (
      <View style={styles.MainContainer}>
        <TextInput>{this.state.id}</TextInput>
-       <Text style={styles.textLabel}>Title</Text>
+       <Text style={styles.textLabel}>{translations.title}</Text>
                     <TextInput style={styles.textInput}  autoCorrect={false}
                         onChangeText = { ( text ) => { this.setState({ title: text })} } value={this.state.title}
                     />
-                    <Text style={styles.textLabel}>Local</Text>
+                    <Text style={styles.textLabel}>{translations.local}</Text>
                     <TextInput style={styles.textInput} autoCorrect={false}
                        onChangeText = { ( text ) => { this.setState({ local: text })} } value={this.state.local}
                     />
-                    <Text style={styles.textLabel}>Description</Text>
+                    <Text style={styles.textLabel}>{translations.desc}</Text>
                     <TextInput multiline={true} style={styles.textInputDesc} autoCorrect={false}
                       onChangeText = { ( text ) => { this.setState({ description: text })} } value={this.state.description}
                     />
        <TouchableOpacity onPress={this.updateRegisto} activeOpacity={0.7} style={styles.button} >
-          <Text style={styles.TextStyle}> Atualizar </Text>
+          <Text style={styles.TextStyle}> {translations.dialogup} </Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={this.deleteRegisto} activeOpacity={0.7} style={styles.button} >
-           <Text style={styles.TextStyle}> Apagar </Text>
+           <Text style={styles.TextStyle}> {translations.delete} </Text>
          </TouchableOpacity>
          
      </View>

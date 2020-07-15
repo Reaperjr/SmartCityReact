@@ -1,17 +1,32 @@
 import React, {useContext} from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, Alert } from 'react-native';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, Alert, Dimensions} from 'react-native';
 import {LocalizationContext} from '../../translation/LocalizationContext';
 import Axios from 'axios';
-
+const window = Dimensions.get("window");
+const screen = Dimensions.get("screen");
 export default function Login({navigation}) {
   const {translations} = useContext(LocalizationContext);
   const [email, setEmail] = React.useState();
   const [password, setPassword] = React.useState();
+  const [dimensions, setDimensions] = React.useState({ window, screen });
+
+  const onChange = ({ window, screen }) => {
+    setDimensions({ window, screen });
+  };
+
+  React.useEffect(() => {
+    Dimensions.addEventListener("change", onChange);
+    return () => {
+      Dimensions.removeEventListener("change", onChange);
+    };
+  });
 
 const login = (email, password) => {
    Axios.post('http://192.168.1.66:3000/api/auth/login', {email: email, password: password})
         .then(res => {alert(res.data.message);
-            navigation.navigate('Map');
+          id = res.data.data[0].id_user;
+          console.log(id);
+            navigation.navigate('Map', {id: id,});
             return res.data;
         })
         .catch(err => {
@@ -21,7 +36,7 @@ const login = (email, password) => {
         });
 }
     return (
-      <View style={styles.container}>
+      <View style={dimensions.window.height > dimensions.window.width ? styles.containerP : styles.containerL }>
         <Text style={styles.logo}>SmartCity</Text>
         <View style={styles.inputView} >
           <TextInput  
@@ -41,20 +56,26 @@ const login = (email, password) => {
         <TouchableOpacity  style={styles.loginBtn}>
           <Text onPress={() => login(email,password)} style={styles.loginText}>LOGIN</Text>
         </TouchableOpacity>
-        <TouchableOpacity>
+        {/* <TouchableOpacity>
           <Text style={styles.loginText}>Signup</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
         <TouchableOpacity>
-          <Text  onPress={() => navigation.navigate('Map')} style={styles.noteText}>{translations.personalNotes}</Text>
+          <Text  onPress={() => navigation.navigate('Inserir')} style={styles.noteText}>{translations.personalNotes}</Text>
         </TouchableOpacity>
-
-  
       </View>
     );
 }
 const styles = StyleSheet.create({
-  container: {
+  containerP: {
     flex: 1,
+    flexDirection: 'column',
+    backgroundColor: 'steelblue',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  containerL: {
+    flex: 1,
+    flexDirection: 'row',
     backgroundColor: 'steelblue',
     alignItems: 'center',
     justifyContent: 'center',

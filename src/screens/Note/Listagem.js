@@ -16,35 +16,17 @@ class Listagem extends Component{
   
   constructor(props) {
     super(props);
+
     this.state = {
         notes: [],
 
     };
+    this.translations = LocalizationContext; 
     this.reloadData();
     NoteDB.realmDB.addListener('change', () => {
         this.reloadData();
     });
 }
-showDeleteConfirmation = (id) => {
-  Alert.alert(
-      'Delete',
-      'Delete a todoList',
-      [
-          {
-              text: 'No', onPress: () => { },//Do nothing
-              style: 'cancel'
-          },
-          {
-              text: 'Yes', onPress: () => {
-                  NoteDB.deleteNote(id).then().catch(error => {
-                      alert(`Failed to delete todoList with id = ${id}, error=${error}`);
-                  });
-              }
-          },
-      ],
-      { cancelable: true }
-  );
-};
 reloadData = () => {
     NoteDB.readNote().then((notes) => {
         this.setState({ notes });

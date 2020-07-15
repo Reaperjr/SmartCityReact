@@ -8,7 +8,7 @@
 import React, { Component } from 'react';
 import { StyleSheet, Platform, View, Button, Image, Text, TextInput, TouchableOpacity, Alert, YellowBox, ListView } from 'react-native';
 import * as NoteDB from '../../db/NoteDB';
-import {LocalizationContext} from '../../translation/LocalizationContext';
+import translations from '../../translation/translations';
 
 class Inserir extends Component{
 
@@ -22,10 +22,10 @@ class Inserir extends Component{
     };
 }
 
-  show_count=()=>{
-    var ID = NoteDB.realmDB.objects('Note').length;
-    Alert.alert("contagem: " + ID);
-  }
+  // show_count=()=>{
+  //   var ID = NoteDB.realmDB.objects('Note').length;
+  //   Alert.alert("contagem: " + ID);
+  // }
 
   addRegisto=()=>{
         const newNote = {
@@ -39,7 +39,7 @@ class Inserir extends Component{
       NoteDB.insertNote(newNote).then().catch((error) => {
           alert(`Insert new Note error ${error}`);
       });
-    Alert.alert("Registo inserido com sucesso.")
+    Alert.alert(translations.insertSuccess)
   }
 
   GoToListagem = () =>
@@ -50,33 +50,21 @@ class Inserir extends Component{
   render() {
    return (
      <View style={styles.MainContainer}>
-       <Text style={styles.textLabel}>Title</Text>
-       
-                    <TextInput style={styles.textInput}  autoCorrect={false}
-                        onChangeText = { ( text ) => { this.setState({ title: text })} }
-                    />
-                    
-                    
-                    <Text style={styles.textLabel}>Local</Text>
-                  
-                    <TextInput style={styles.textInput} autoCorrect={false}
-                       onChangeText = { ( text ) => { this.setState({ local: text })} }
-                    />
-                   
-                    <Text style={styles.textLabel}>Description</Text>
-                  
-                    <TextInput multiline={true} style={styles.textInputDesc} autoCorrect={false}
-                      onChangeText = { ( text ) => { this.setState({ description: text })} }
-                    />
+       <Text style={styles.textLabel}>{translations.title}</Text>
+       <TextInput style={styles.textInput}  autoCorrect={false}onChangeText = { ( text ) => { this.setState({ title: text })} }/>             
+       <Text style={styles.textLabel}>{translations.local}</Text>
+       <TextInput style={styles.textInput} autoCorrect={false} onChangeText = { ( text ) => { this.setState({ local: text })} } />
+       <Text style={styles.textLabel}>{translations.desc}</Text>
+       <TextInput multiline={true} style={styles.textInputDesc} autoCorrect={false} onChangeText = { ( text ) => { this.setState({ description: text })} }/>
                   
        <TouchableOpacity onPress={this.addRegisto} activeOpacity={0.7} style={styles.button} >
-          <Text style={styles.TextStyle}> ADICIONAR </Text>
+          <Text style={styles.TextStyle}> {translations.dialogadd} </Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={this.show_count} activeOpacity={0.7} style={styles.button} >
+        {/* <TouchableOpacity onPress={this.show_count} activeOpacity={0.7} style={styles.button} >
           <Text style={styles.TextStyle}> CONTAGEM </Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
         <TouchableOpacity onPress={this.GoToListagem} activeOpacity={0.7} style={styles.button} >
-          <Text style={styles.TextStyle}> LISTAGEM </Text>
+          <Text style={styles.TextStyle}>{translations.noteslist}  </Text>
         </TouchableOpacity>
      </View>
    );

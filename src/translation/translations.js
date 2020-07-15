@@ -26,10 +26,15 @@ const translations = {
     dialogalertdesc: 'Please enter note description',
     fillFields: 'Fill all fields before continuing!',
     personalNotes: 'Personal Notes',
-    takePic:'Take Picture',
-    save:'Save'
+    takePic:'Camera',
+    save:'Save',
+    insertSuccess: 'Note inserted with success',
+    updateSuccess: 'Note updated with success',
+    EditNote:'Edit Note',
   },
   pt: {
+    updateSuccess: 'Nota atualizada com successo',
+    insertSuccess: 'Nota inserida com successo',
     WELCOME: 'Bem-vindo à multi-lingua',
     BUTTON: 'b pt',
     title: 'Título',
@@ -53,8 +58,9 @@ const translations = {
     dialogalertdesc: 'Introduza descrição da nota',
     fillFields: 'Preencha todos os campos para continuar!',
     personalNotes: 'Notas Pessoais',
-    takePic:'Tirar Fotografia',
-    save: 'Guardar'
+    takePic:'Camera',
+    save: 'Guardar',
+    EditNote:'Editar Nota',
   }
 };
 export default new LocalizedStrings(translations);
