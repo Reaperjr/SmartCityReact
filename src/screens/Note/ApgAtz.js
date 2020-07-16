@@ -48,8 +48,10 @@ class ApgAtz extends Component{
           },
           {
               text: translations.yes, onPress: () => {
-                  NoteDB.deleteNote(id).then().catch(error => {
-                      alert(`Failed to delete todoList with id = ${id}, error=${error}`);
+                  NoteDB.deleteNote(this.state.id).then( () =>{
+                    this.props.navigation.navigate('Listagem');
+                  }).catch(error => {
+                      alert(`Failed to delete todoList with id = ${this.state.id}, error=${error}`);
                   });
               }
           },
